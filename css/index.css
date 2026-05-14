@@ -104,7 +104,11 @@ body, body * {
 .filters-container{
     height: 10vh;
     width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: var(--salmon-light);
+    color: var(--text-primary);
 }
 
 contenuto{
