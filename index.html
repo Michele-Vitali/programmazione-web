@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/palette.css">
+    <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="./css/index.css"> 
     <script src="https://kit.fontawesome.com/c58b9694dc.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
@@ -11,7 +11,7 @@
     <title>UniFon</title>
 </head>
 <body class="light-mode">
-    <header class="header title">
+    <header class="header">
         <div class="theme-mode-container-dummy">
             <i class="fa-solid fa-circle-half-stroke"></i>
         </div>
@@ -22,25 +22,41 @@
     </header>
     <navbar class="navbar">
         <ul class="navbar-list">
-            <li><a class="paragraph" href="#">Homepage</a></li>
+            <li><a class="paragraph active" href="#">Stipula contratto</a></li>
             <li><a class="paragraph" href="#">Progetto</a></li>
             <li><a class="paragraph" href="#">About</a></li>
             <li><a class="paragraph" href="#">Contacts</a></li>
             <li><a class="paragraph" href="#">Ciao</a></li>
         </ul>
     </navbar>
-    <filters>
-        <div class="filters-container">
+    <section class="filters-container">
+        <div class="filters">
             Questo è il contenitore dei filtri...
         </div>
-    </filters>
-    <contenuto>
-        <p class="greetings">
-            Benvenuto nel sito di UniFon.
-            <br>
-            Clicca pure su uno dei link posti qui sopra per iniziare a navigare e cercare le informazioni che ti servono!
-        </p>
-    </contenuto>
+    </section>
+    <section class="content-container">
+        <div class="centering-content">
+            <p class="introduction">Inserisci questi dati per stipulare un nuovo contratto con Unifon</p>
+            <form action="stipulate.php" method="POST">
+                <div class="type-container">
+                    <label class="form-label" for="type-select">Tipo di contratto:</label>
+                    <select name="type" class="type-select" id="type-select" required>
+                        <option value="" disabled selected>Selezione un opzione...</option>
+                        <option value="ricarica">Ricarica</option>
+                        <option value="consumo">Consumo</option>
+                    </select>
+                </div>
+                <div class="optional-container">
+                    <p class="startup-request">&nbsp;</p>
+                    <div class="quantity-container">
+                        <input type="number" name="quantity" class="quantity-input" min="0" value="0">
+                        <span class="quantity-unit"></span>
+                    </div>
+                </div>
+                <button type="submit" class="submit-button">Crea SIM</button>
+            </form>
+        </div>
+    </section>
     <footer>
         <p>Progetto universitario del gruppo EsperiaBoys</p>
     </footer>

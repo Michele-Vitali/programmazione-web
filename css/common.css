@@ -1,3 +1,10 @@
+body{
+    --title: 2rem;
+    --subtitle: 1.5rem;
+    --paragraph: 1rem;
+    --note: 0.8rem;
+}
+
 .light-mode{
     --salmon-primary: #F5A89C;     
     --salmon-dark: #E08E82;        
@@ -43,4 +50,8 @@
     --warning: #8A7A55;            
     --error: #8A6666;              
     --info: #668A8A;               
+}
+
+.active{
+    background-color: var(--salmon-dark);
 }
