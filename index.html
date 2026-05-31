@@ -25,7 +25,8 @@
         <ul class="navbar-list">
             <li><a class="nav-link active" href="#" data-target="section-gestione">Gestione Telefonate</a></li>
             <li><a class="nav-link" href="#" data-target="section-crea-chiamata">Inserisci Telefonata</a></li>
-            <li><a class="nav-link" href="#" data-target="section-contratto">Stipula Contratto</a></li>
+            <li><a class="nav-link" href="#" data-target="section-contratti">Cerca Contratti</a></li>
+            <li><a class="nav-link" href="#" data-target="section-sim">Cerca SIM</a></li>
         </ul>
     </nav>
 
@@ -35,14 +36,13 @@
                 <label for="search-input">Cerca Utente (Nome, Cognome o Telefono):</label>
                 <div class="search-box">
                     <input type="text" id="search-input" placeholder="Es. Mario Rossi o 333...">
-                    <button id="btn-search" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+                    <button id="btn-search-telefonate" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
                 </div>
             </div>
         </section>
 
         <section class="content-container">
             <div class="centering-content grid-container">
-                
                 <div class="table-wrapper">
                     <h3>Risultati Ricerca Chiamate</h3>
                     <table class="admin-table">
@@ -56,24 +56,13 @@
                                 <th class="text-center">Azioni</th>
                             </tr>
                         </thead>
-                        <tbody id="results-tbody">
-                            <tr class="clickable-row" data-id-chiamata="101" data-nome="Mario" data-cognome="Rossi" data-tel="333123456" data-data="2026-05-30" data-ora="15:00" data-durata="12" data-costo="5.00">
+                        <tbody id="results-tbody-telefonate">
+                            <tr class="clickable-row row-chiamata" data-id-chiamata="101" data-nome="Mario" data-cognome="Rossi" data-tel="333123456" data-data="2026-05-30" data-ora="15:00" data-durata="12" data-costo="5.00">
                                 <td>Mario Rossi</td>
                                 <td>333123456</td>
                                 <td>30/05/2026 15:00</td>
                                 <td>12</td>
                                 <td>5,00 €</td>
-                                <td class="text-center action-buttons">
-                                    <button class="btn-action btn-edit" title="Modifica Chiamata"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="btn-action btn-delete" title="Elimina Chiamata"><i class="fa-solid fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr class="clickable-row" data-id-chiamata="102" data-nome="Luca" data-cognome="Bianchi" data-tel="339987654" data-data="2026-05-29" data-ora="11:30" data-durata="5" data-costo="0.00">
-                                <td>Luca Bianchi</td>
-                                <td>339987654</td>
-                                <td>29/05/2026 11:30</td>
-                                <td>5</td>
-                                <td>0,00 €</td>
                                 <td class="text-center action-buttons">
                                     <button class="btn-action btn-edit" title="Modifica Chiamata"><i class="fa-solid fa-pen-to-square"></i></button>
                                     <button class="btn-action btn-delete" title="Elimina Chiamata"><i class="fa-solid fa-trash"></i></button>
@@ -87,7 +76,6 @@
                     <h3 id="edit-title">Modifica Chiamata</h3>
                     <form action="update_call.php" method="POST" class="admin-form">
                         <input type="hidden" name="id_chiamata" id="edit-id">
-                        
                         <div class="form-group">
                             <label>Utente selezionato:</label>
                             <span id="edit-user-display" class="highlight-text"></span>
@@ -118,67 +106,138 @@
                         </div>
                     </form>
                 </div>
-
             </div>
         </section>
     </div>
 
-    <div id="section-crea-chiamata" class="page-section content-container hidden-element">
-        <div class="centering-content admin-card">
-            <h2>Inserisci Chiamata Tecnica / Manuale</h2>
-            <p class="form-subtitle">Usa questa sezione per inserire storni o transazioni correttive a costo zero o negativo.</p>
-            <form action="insert_call.php" method="POST" class="admin-form">
-                <div class="form-group">
-                    <label for="insert-tel">Numero di Telefono del Contratto:</label>
-                    <input type="text" name="telefono" id="insert-tel" required placeholder="Es. 333123456">
+    <div id="section-crea-chiamata" class="page-section hidden-element">
+        <section class="content-container">
+            <div class="centering-content grid-container">
+                <div class="admin-card">
+                    <h2>Inserisci Chiamata Tecnica / Manuale</h2>
+                    <p class="form-subtitle">Usa questa sezione per inserire storni o transazioni correttive a costo zero o negativo.</p>
+                    <form action="insert_call.php" method="POST" class="admin-form">
+                        <div class="form-group">
+                            <label for="insert-tel">Numero di Telefono del Contratto:</label>
+                            <input type="text" name="telefono" id="insert-tel" required placeholder="Es. 333123456">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="insert-date">Data:</label>
+                                <input type="date" name="data" required value="2026-05-31">
+                            </div>
+                            <div class="form-group">
+                                <label for="insert-time">Ora:</label>
+                                <input type="time" name="ora" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="insert-duration">Durata (minuti):</label>
+                                <input type="number" name="durata" min="0" value="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="insert-cost">Costo (Usa valori negativi per storni es: -5.00):</label>
+                                <input type="number" name="costo" step="0.01" value="0.00" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-full">Registra Chiamata</button>
+                    </form>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="insert-date">Data:</label>
-                        <input type="date" name="data" required value="2026-05-31">
-                    </div>
-                    <div class="form-group">
-                        <label for="insert-time">Ora:</label>
-                        <input type="time" name="ora" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="insert-duration">Durata (secondi/minuti):</label>
-                        <input type="number" name="durata" min="0" value="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="insert-cost">Costo (Usa valori negativi per gli storni es: -5.00):</label>
-                        <input type="number" name="costo" step="0.01" value="0.00" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-success btn-full">Registra Chiamata</button>
-            </form>
-        </div>
+            </div>
+        </section>
     </div>
 
-    <div id="section-contratto" class="page-section content-container hidden-element">
-        <div class="centering-content admin-card">
-            <p class="introduction">Inserisci questi dati per stipulare un nuovo contratto con Unifon</p>
-            <form action="stipulate.php" method="POST" class="admin-form">
-                <div class="type-container">
-                    <label class="form-label" for="type-select">Tipo di contratto:</label>
-                    <select name="type" class="type-select" id="type-select" required style="max-width:100%; min-width:100%;">
-                        <option value="" disabled selected>Seleziona un'opzione...</option>
-                        <option value="ricarica">Ricarica</option>
-                        <option value="consumo">Consumo</option>
-                    </select>
+    <div id="section-contratti" class="page-section hidden-element">
+        <section class="filters-container">
+            <div class="filters">
+                <label for="search-input-contratti">Cerca Contratto per Telefono:</label>
+                <div class="search-box">
+                    <input type="text" id="search-input-contratti" placeholder="Es. 333...">
+                    <button id="btn-search-contratti" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
                 </div>
-                <div class="optional-container">
-                    <p class="startup-request">&nbsp;</p>
-                    <div class="quantity-container">
-                        <input type="number" name="quantity" class="quantity-input" min="0" value="0">
-                        <span class="quantity-unit"></span>
-                    </div>
+            </div>
+        </section>
+        <section class="content-container">
+            <div class="centering-content grid-container">
+                <div class="table-wrapper">
+                    <h3>Elenco Contratti Telefonici</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Numero Telefono</th>
+                                <th>Data Attivazione</th>
+                                <th>Tipo Contratto</th>
+                                <th>Residuo (Credito / Minuti)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-tbody-contratti">
+                            <tr class="clickable-row row-contratto" data-tel="333123456">
+                                <td>333123456</td>
+                                <td>15/01/2024</td>
+                                <td>Ricarica</td>
+                                <td>12,50 €</td>
+                            </tr>
+                            <tr class="clickable-row row-contratto" data-tel="339987654">
+                                <td>339987654</td>
+                                <td>10/05/2025</td>
+                                <td>Consumo</td>
+                                <td>140 Minuti</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <button type="submit" class="btn btn-primary btn-full">Crea SIM</button>
-            </form>
-        </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="section-sim" class="page-section hidden-element">
+        <section class="filters-container">
+            <div class="filters">
+                <label for="search-input-sim">Cerca SIM (Codice ICCID o Telefono):</label>
+                <div class="search-box">
+                    <input type="text" id="search-input-sim" placeholder="Es. 8939...">
+                    <button id="btn-search-sim" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+                </div>
+            </div>
+        </section>
+        <section class="content-container">
+            <div class="centering-content grid-container">
+                <div class="table-wrapper">
+                    <h3>Storico e Gestione SIM</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Codice SIM</th>
+                                <th>Tipo</th>
+                                <th>Stato</th>
+                                <th>Telefono Associato</th>
+                                <th>Data Attivazione</th>
+                                <th>Data Disattivazione</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-tbody-sim">
+                            <tr class="clickable-row row-sim" data-sim="89390123456789">
+                                <td>89390123456789</td>
+                                <td>Nano SIM</td>
+                                <td><span class="text-success-bold">Attiva</span></td>
+                                <td>333123456</td>
+                                <td>15/01/2024</td>
+                                <td>-</td>
+                            </tr>
+                            <tr class="clickable-row row-sim" data-sim="89399876543210">
+                                <td>89399876543210</td>
+                                <td>eSIM</td>
+                                <td><span class="text-danger">Disattivata</span></td>
+                                <td>339987654</td>
+                                <td>01/02/2025</td>
+                                <td>10/05/2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     </div>
 
     <div id="delete-modal" class="modal-overlay hidden-element">
