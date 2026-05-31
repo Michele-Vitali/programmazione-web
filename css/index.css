@@ -1,3 +1,6 @@
+/* =========================================
+   1. STILI BASE E SCROLLBAR (Originali)
+   ========================================= */
 .example::-webkit-scrollbar {
   display: none;
 }
@@ -20,6 +23,7 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: var(--bg-primary, #ffffff); /* Fallback per light mode */
 }
 
 body, body * {
@@ -28,6 +32,9 @@ body, body * {
                 border-color 0.3s ease;
 }
 
+/* =========================================
+   2. HEADER E NAVBAR (Originali)
+   ========================================= */
 .header{
     background-color: var(--salmon-dark);
     width: 100vw;
@@ -35,7 +42,7 @@ body, body * {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--text-light);
+    color: #FFFFFF; /* Testo header sempre bianco o usa var(--text-light) */
     padding: 0 1rem;
     font-size: var(--title);
 }
@@ -82,7 +89,7 @@ body, body * {
     height: 100%;
     padding: 1rem 2rem;
     text-decoration: none;
-    color: var(--text-light);
+    color: #FFFFFF; /* Manteniamo bianco sulla navbar salmone */
 }
 
 .navbar-list li:hover{
@@ -90,14 +97,18 @@ body, body * {
     cursor: pointer;
 }
 
+/* =========================================
+   3. LAYOUT PRINCIPALE SEZIONI
+   ========================================= */
 .filters-container{
-    height: 10vh;
+    min-height: 10vh;
     width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--salmon-light);
     color: var(--text-primary);
+    padding: 1rem 0;
 }
 
 .content-container{
@@ -106,53 +117,219 @@ body, body * {
     background-color: var(--salmon-ultra-light);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Allineato in alto per le tabelle */
     flex-direction: column;
     color: var(--text-primary);
+    padding-bottom: 2rem;
 }
 
 .centering-content{
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    width: 100%;
+    align-items: center;
 }
 
+/* Gestione Pagine (Nascoste/Attive) */
+.hidden-element {
+    display: none !important;
+}
+
+.page-section {
+    display: none;
+    width: 100vw;
+    flex: 1;
+}
+
+.page-section.active-section {
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================
+   4. COMPONENTI BACK-OFFICE (Filtri, Card, Bottoni)
+   ========================================= */
+.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 90%;
+    max-width: 800px;
+}
+
+.search-box {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 0.6rem;
+    border-radius: 5px;
+    border: 1px solid var(--border-focus);
+    background-color: var(--bg-secondary, #ffffff);
+    color: var(--text-primary);
+    font-size: var(--paragraph);
+}
+
+.search-box input:focus {
+    outline: 2px solid var(--salmon-dark);
+}
+
+/* Bottoni Integrati col tuo Tema */
+.btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: var(--paragraph);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background 0.2s, opacity 0.2s;
+    color: #4A4A4A; /* Testo scuro di base per contrasto sui colori chiari */
+}
+
+.btn:hover { opacity: 0.8; }
+.btn-primary { background-color: var(--salmon-primary); }
+.btn-success { background-color: var(--success); }
+.btn-danger { background-color: var(--error); }
+.btn-secondary { background-color: var(--info); }
+.btn-full { width: 100%; justify-content: center; }
+
+/* Contenitori a griglia per la tabella */
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 90%;
+    max-width: 1200px;
+    padding: 2rem 0;
+}
+
+.table-wrapper, .admin-card {
+    background-color: var(--bg-card, #ffffff); /* Sfondo bianco in light, scuro in dark */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 100%;
+}
+
+.admin-card {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+/* =========================================
+   5. TABELLA AMMINISTRATORE
+   ========================================= */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: var(--paragraph);
+    color: var(--text-primary);
+}
+
+.admin-table th, .admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.admin-table th {
+    background-color: var(--salmon-muted);
+    font-weight: bold;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.clickable-row:hover {
+    background-color: var(--salmon-ultra-light);
+}
+
+.text-center { text-align: center !important; }
+.text-danger { color: var(--error); font-weight: bold; }
+
+/* Bottoni d'azione riga */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.btn-action {
+    border: none;
+    padding: 0.5rem 0.7rem;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #4A4A4A;
+    font-size: var(--paragraph);
+}
+
+.btn-edit { background-color: var(--warning); }
+.btn-delete { background-color: var(--error); }
+
+/* =========================================
+   6. FORM E INPUT (Stipula, Modifica, Crea)
+   ========================================= */
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.admin-form input, .admin-form select {
+    padding: 0.6rem;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    font-size: var(--paragraph);
+    background-color: var(--bg-secondary, #ffffff);
+    color: var(--text-primary);
+}
+
+.highlight-text {
+    font-weight: bold;
+    color: var(--salmon-dark);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Regole Vecchie per Stipula Contratto (Mantenute e Adattate) */
 .type-container{
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
 }
 
-form{
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
 .form-label{
     color: var(--text-secondary);
     font-size: var(--note);
-}
-
-select{
-    border: none;
-    outline: 0.1rem;
-    padding: 0.1rem 0.5rem;
-    border-radius: 5px;
-    font-size: var(--note);
-    background-color: white;
-    color: var(--text-secondary);
-    min-width: 30%;
-    max-width: 40%;
-}
-
-select:valid{
-    color: black;
-}
-
-select:hover,
-select option:hover{
-    cursor: pointer;
 }
 
 .optional-container{
@@ -162,14 +339,9 @@ select option:hover{
     display: none;
 }
 
-.quantity-input{
-    min-width: 30%;
-    max-width: 40%;
-}
-
-.quantity-unit{
-    font-size: var(--note);
-}
+.quantity-container { display: flex; gap: 0.5rem; align-items: center; }
+.quantity-input{ min-width: 30%; max-width: 40%; }
+.quantity-unit{ font-size: var(--note); color: var(--text-primary); }
 
 .startup-request{
     font-size: var(--note);
@@ -177,15 +349,47 @@ select option:hover{
     color: var(--text-secondary);
 }
 
-.submit-button{
-    min-width: 40%;
-    max-width: 50%;
+/* =========================================
+   7. MODALE OVERLAY
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
 }
 
-.submit-button:hover{
-    cursor: pointer;
+.modal-box {
+    background-color: var(--bg-card, #ffffff);
+    color: var(--text-primary);
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
+.modal-details {
+    background-color: var(--salmon-ultra-light);
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    font-size: var(--paragraph);
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* =========================================
+   8. FOOTER
+   ========================================= */
 footer{
     height: 5vh;
     width: 100vw;
@@ -196,3 +400,35 @@ footer{
     padding: 1.5rem;
     color: var(--text-primary);
 }
+
+/* =========================================
+   9. FIX SPECIFICI PER LA DARK MODE
+   ========================================= */
+.dark-mode .table-wrapper, 
+.dark-mode .admin-card, 
+.dark-mode .modal-box {
+    background-color: var(--bg-card); /* Usa il grigio scuro in dark mode */
+}
+
+.dark-mode .admin-table th {
+    background-color: var(--salmon-muted); /* Colore testata tabella scura */
+    color: var(--text-primary);
+}
+
+.dark-mode .clickable-row:hover {
+    background-color: var(--bg-elevated);
+}
+
+.dark-mode .modal-details {
+    background-color: var(--bg-elevated);
+}
+
+.dark-mode input, .dark-mode select {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-light);
+}
+
+/* Fix testo bottoni in dark mode per renderli leggibili */
+.dark-mode .btn { color: var(--bg-primary); }
+.dark-mode .btn-action { color: var(--bg-primary); }
