@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/common.css">
-    <link rel="stylesheet" href="./css/index.css"> 
+    <link rel="stylesheet" href="./css/index.css">
     <script src="https://kit.fontawesome.com/c58b9694dc.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"
+        integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
     <script src="./js/index.js"></script>
     <title>UniFon - BackOffice</title>
 </head>
+
 <body class="light-mode">
     <header class="header">
         <div class="theme-mode-container-dummy">
@@ -36,7 +39,8 @@
                 <label for="search-input">Cerca Utente (Nome, Cognome o Telefono):</label>
                 <div class="search-box">
                     <input type="text" id="search-input" placeholder="Es. Mario Rossi o 333...">
-                    <button id="btn-search-telefonate" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+                    <button id="btn-search-telefonate" class="btn btn-primary"><i
+                            class="fa-solid fa-magnifying-glass"></i> Cerca</button>
                 </div>
             </div>
         </section>
@@ -57,15 +61,19 @@
                             </tr>
                         </thead>
                         <tbody id="results-tbody-telefonate">
-                            <tr class="clickable-row row-chiamata" data-id-chiamata="101" data-nome="Mario" data-cognome="Rossi" data-tel="333123456" data-data="2026-05-30" data-ora="15:00" data-durata="12" data-costo="5.00">
+                            <tr class="clickable-row row-chiamata" data-id-chiamata="101" data-nome="Mario"
+                                data-cognome="Rossi" data-tel="333123456" data-data="2026-05-30" data-ora="15:00"
+                                data-durata="12" data-costo="5.00">
                                 <td>Mario Rossi</td>
                                 <td>333123456</td>
                                 <td>30/05/2026 15:00</td>
                                 <td>12</td>
                                 <td>5,00 €</td>
                                 <td class="text-center action-buttons">
-                                    <button class="btn-action btn-edit" title="Modifica Chiamata"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="btn-action btn-delete" title="Elimina Chiamata"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="btn-action btn-edit" title="Modifica Chiamata"><i
+                                            class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="btn-action btn-delete" title="Elimina Chiamata"><i
+                                            class="fa-solid fa-trash"></i></button>
                                 </td>
                             </tr>
                         </tbody>
@@ -115,7 +123,8 @@
             <div class="centering-content grid-container">
                 <div class="admin-card">
                     <h2>Inserisci Chiamata Tecnica / Manuale</h2>
-                    <p class="form-subtitle">Usa questa sezione per inserire storni o transazioni correttive a costo zero o negativo.</p>
+                    <p class="form-subtitle">Usa questa sezione per inserire storni o transazioni correttive a costo
+                        zero o negativo.</p>
                     <form action="insert_call.php" method="POST" class="admin-form">
                         <div class="form-group">
                             <label for="insert-tel">Numero di Telefono del Contratto:</label>
@@ -154,7 +163,8 @@
                 <label for="search-input-contratti">Cerca Contratto per Telefono:</label>
                 <div class="search-box">
                     <input type="text" id="search-input-contratti" placeholder="Es. 333...">
-                    <button id="btn-search-contratti" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+                    <button id="btn-search-contratti" class="btn btn-primary"><i
+                            class="fa-solid fa-magnifying-glass"></i> Cerca</button>
                 </div>
             </div>
         </section>
@@ -197,7 +207,8 @@
                 <label for="search-input-sim">Cerca SIM (Codice ICCID o Telefono):</label>
                 <div class="search-box">
                     <input type="text" id="search-input-sim" placeholder="Es. 8939...">
-                    <button id="btn-search-sim" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+                    <button id="btn-search-sim" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>
+                        Cerca</button>
                 </div>
             </div>
         </section>
@@ -210,29 +221,11 @@
                             <tr>
                                 <th>Codice SIM</th>
                                 <th>Tipo</th>
-                                <th>Stato</th>
                                 <th>Telefono Associato</th>
                                 <th>Data Attivazione</th>
-                                <th>Data Disattivazione</th>
                             </tr>
                         </thead>
                         <tbody id="results-tbody-sim">
-                            <tr class="clickable-row row-sim" data-sim="89390123456789">
-                                <td>89390123456789</td>
-                                <td>Nano SIM</td>
-                                <td><span class="text-success-bold">Attiva</span></td>
-                                <td>333123456</td>
-                                <td>15/01/2024</td>
-                                <td>-</td>
-                            </tr>
-                            <tr class="clickable-row row-sim" data-sim="89399876543210">
-                                <td>89399876543210</td>
-                                <td>eSIM</td>
-                                <td><span class="text-danger">Disattivata</span></td>
-                                <td>339987654</td>
-                                <td>01/02/2025</td>
-                                <td>10/05/2025</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -243,7 +236,8 @@
     <div id="delete-modal" class="modal-overlay hidden-element">
         <div class="modal-box">
             <h3><i class="fa-solid fa-triangle-exclamation text-danger"></i> Conferma Eliminazione</h3>
-            <p>Sei sicuro di voler eliminare definitivamente questo record telefonico? L'operazione ricalcolerà il bilancio del cliente.</p>
+            <p>Sei sicuro di voler eliminare definitivamente questo record telefonico? L'operazione ricalcolerà il
+                bilancio del cliente.</p>
             <div class="modal-details">
                 <p><strong>Utente:</strong> <span id="del-user"></span></p>
                 <p><strong>Telefono:</strong> <span id="del-tel"></span></p>
@@ -263,4 +257,5 @@
         <p>Progetto universitario del gruppo EsperiaBoys - Interfaccia Back-Office</p>
     </footer>
 </body>
+
 </html>

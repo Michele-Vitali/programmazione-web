@@ -1,11 +1,11 @@
-$(document).ready(function(){
+$(document).ready(function () {
 
     console.log("JQuery collegato e pronto per il Back-Office!");
 
     // 1. GESTIONE CAMBIO PAGINA DA NAVBAR (Click-driven)
-    $('.nav-link').on('click', function(e){
+    $('.nav-link').on('click', function (e) {
         e.preventDefault();
-        
+
         // Rimuovi classe attiva dai link e aggiungi al corrente
         $('.nav-link').removeClass('active');
         $(this).addClass('active');
@@ -17,13 +17,13 @@ $(document).ready(function(){
     });
 
     // 2. TOGGLE DARK/LIGHT MODE
-    $('.theme-mode-container').on('click', function(){
+    $('.theme-mode-container').on('click', function () {
         const body = $('body');
         body.toggleClass("light-mode").toggleClass("dark-mode");
     });
 
     // 3. SELEZIONE TIPO CONTRATTO (Vecchio script mantenuto e integrato)
-    $('.type-select').on('change', function(){
+    $('.type-select').on('change', function () {
         const startup_request = $('.startup-request');
         const span_unit = $('.quantity-unit');
         const current_selection = $(this).val();
@@ -32,7 +32,7 @@ $(document).ready(function(){
         let new_text = "";
         let quantity_unit = "";
 
-        if(current_selection == 'ricarica'){
+        if (current_selection == 'ricarica') {
             new_text = "Vuoi già partire con del credito iniziale?<br>Se sì, seleziona quanto...";
             quantity_unit = "€";
         } else {
@@ -46,22 +46,22 @@ $(document).ready(function(){
     });
 
     // 4. CLICK SULLA RIGA DELLA TABELLA (Mostra dettagli o compila il pannello)
-    $('.clickable-row').on('click', function(e){
+    $('.clickable-row').on('click', function (e) {
         // Evitiamo che il click sui pulsanti interni attivi questo handler
         if ($(e.target).closest('.btn-action').length) return;
 
         const nome = $(this).data('nome');
         const cognome = $(this).data('cognome');
         const tel = $(this).data('tel');
-        
+
         alert("Dettagli Contratto Selezionato:\nCliente: " + nome + " " + cognome + "\nTelefono: " + tel + "\nStato SIM: Attiva");
     });
 
     // 5. AZIONE MODIFICA (Matita)
-    $('.btn-edit').on('click', function(e){
+    $('.btn-edit').on('click', function (e) {
         e.stopPropagation(); // Blocca propagazione alla riga
         const row = $(this).closest('.clickable-row');
-        
+
         // Estrazione dati dai data-attributes della riga
         const id = row.data('id-chiamata');
         const nome = row.data('nome');
@@ -82,7 +82,7 @@ $(document).ready(function(){
 
         // Mostra il pannello con effetto scorrimento
         $('#edit-panel').removeClass('hidden-element').hide().fadeIn(300);
-        
+
         // Scroll automatico verso il form di modifica per comodità dell'utente
         $('html, body').animate({
             scrollTop: $("#edit-panel").offset().top
@@ -90,17 +90,17 @@ $(document).ready(function(){
     });
 
     // Annulla Modifica
-    $('#btn-cancel-edit').on('click', function(){
-        $('#edit-panel').fadeOut(200, function(){
+    $('#btn-cancel-edit').on('click', function () {
+        $('#edit-panel').fadeOut(200, function () {
             $(this).addClass('hidden-element');
         });
     });
 
     // 6. AZIONE ELIMINA (Cestino) -> Apre Modale di Conferma
-    $('.btn-delete').on('click', function(e){
+    $('.btn-delete').on('click', function (e) {
         e.stopPropagation();
         const row = $(this).closest('.clickable-row');
-        
+
         const id = row.data('id-chiamata');
         const nome = row.data('nome');
         const cognome = row.data('cognome');
@@ -118,25 +118,49 @@ $(document).ready(function(){
     });
 
     // Chiudi modale eliminazione
-    $('#btn-cancel-del, .modal-overlay').on('click', function(e){
+    $('#btn-cancel-del, .modal-overlay').on('click', function (e) {
         if (e.target !== this && this.id !== 'btn-cancel-del') return; // Evita chiusura cliccando dentro il box
         $('#delete-modal').addClass('hidden-element');
     });
 
     // 7. SIMULAZIONE RICERCA (Facoltativa, per mostrare interazione immediata)
-    $('#btn-search').on('click', function(){
+    $('#btn-search').on('click', function () {
         const valore = $('#search-input').val().toLowerCase();
-        if(valore === "") {
+        if (valore === "") {
             $('#results-tbody tr').show();
             return;
         }
-        
-        $('#results-tbody tr').each(function(){
+
+        $('#results-tbody tr').each(function () {
             const rigatesto = $(this).text().toLowerCase();
-            if(rigatesto.indexOf(valore) === -1) {
+            if (rigatesto.indexOf(valore) === -1) {
                 $(this).hide();
             } else {
                 $(this).show();
+            }
+        });
+    });
+    // RICERCA SIM (Dinamica dal database)
+    $('#btn-search-sim').on('click', function () {
+        const termine = $('#search-input-sim').val().trim();
+
+        if (termine === '') {
+            $('#results-tbody-sim').html('<tr><td colspan="4" class="text-center">Inserisci un codice da cercare</td></tr>');
+            return;
+        }
+
+        $('#results-tbody-sim').html('<tr><td colspan="4" class="text-center"><i class="fa-solid fa-spinner fa-pulse"></i> Caricamento...</td></tr>');
+
+        $.ajax({
+            url: '../php/search_sim.php',   // ← CARTELLA PHP!
+            type: 'GET',
+            data: { q: termine },
+            dataType: 'html',
+            success: function (response) {
+                $('#results-tbody-sim').html(response);
+            },
+            error: function (xhr, status, error) {
+                $('#results-tbody-sim').html('<tr><td colspan="4" class="text-center text-danger">Errore nella ricerca</td></tr>');
             }
         });
     });
