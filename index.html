@@ -61,21 +61,7 @@
                             </tr>
                         </thead>
                         <tbody id="results-tbody-telefonate">
-                            <tr class="clickable-row row-chiamata" data-id-chiamata="101" data-nome="Mario"
-                                data-cognome="Rossi" data-tel="333123456" data-data="2026-05-30" data-ora="15:00"
-                                data-durata="12" data-costo="5.00">
-                                <td>Mario Rossi</td>
-                                <td>333123456</td>
-                                <td>30/05/2026 15:00</td>
-                                <td>12</td>
-                                <td>5,00 €</td>
-                                <td class="text-center action-buttons">
-                                    <button class="btn-action btn-edit" title="Modifica Chiamata"><i
-                                            class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="btn-action btn-delete" title="Elimina Chiamata"><i
-                                            class="fa-solid fa-trash"></i></button>
-                                </td>
-                            </tr>
+                            <!-- Riempito via AJAX -->
                         </tbody>
                     </table>
                 </div>
@@ -117,7 +103,6 @@
             </div>
         </section>
     </div>
-
     <div id="section-crea-chiamata" class="page-section hidden-element">
         <section class="content-container">
             <div class="centering-content grid-container">
@@ -125,7 +110,11 @@
                     <h2>Inserisci Chiamata Tecnica / Manuale</h2>
                     <p class="form-subtitle">Usa questa sezione per inserire storni o transazioni correttive a costo
                         zero o negativo.</p>
-                    <form action="insert_call.php" method="POST" class="admin-form">
+
+                    <!-- Il messaggio di risposta appare qui -->
+                    <div id="insert-response" class="response-container"></div>
+
+                    <form id="form-insert-call" class="admin-form">
                         <div class="form-group">
                             <label for="insert-tel">Numero di Telefono del Contratto:</label>
                             <input type="text" name="telefono" id="insert-tel" required placeholder="Es. 333123456">
@@ -133,24 +122,26 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="insert-date">Data:</label>
-                                <input type="date" name="data" required value="2026-05-31">
+                                <input type="date" name="data" id="insert-date" required>
                             </div>
                             <div class="form-group">
                                 <label for="insert-time">Ora:</label>
-                                <input type="time" name="ora" required>
+                                <input type="time" name="ora" id="insert-time" required>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="insert-duration">Durata (minuti):</label>
-                                <input type="number" name="durata" min="0" value="0" required>
+                                <input type="number" name="durata" id="insert-duration" min="0" value="0" required>
                             </div>
                             <div class="form-group">
-                                <label for="insert-cost">Costo (Usa valori negativi per storni es: -5.00):</label>
-                                <input type="number" name="costo" step="0.01" value="0.00" required>
+                                <label for="insert-cost">Costo (usa valori negativi per storni):</label>
+                                <input type="number" name="costo" id="insert-cost" step="0.01" value="0.00" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success btn-full">Registra Chiamata</button>
+                        <button type="submit" class="btn btn-success btn-full">
+                            <i class="fa-solid fa-phone"></i> Registra Chiamata
+                        </button>
                     </form>
                 </div>
             </div>
@@ -160,9 +151,9 @@
     <div id="section-contratti" class="page-section hidden-element">
         <section class="filters-container">
             <div class="filters">
-                <label for="search-input-contratti">Cerca Contratto per Telefono:</label>
+                <label for="search-input-contratti">Cerca Contratto per numero telefono o nominativo:</label>
                 <div class="search-box">
-                    <input type="text" id="search-input-contratti" placeholder="Es. 333...">
+                    <input type="text" id="search-input-contratti" placeholder="Es. Mario Rossi o +39 339 666 3890">
                     <button id="btn-search-contratti" class="btn btn-primary"><i
                             class="fa-solid fa-magnifying-glass"></i> Cerca</button>
                 </div>
@@ -176,24 +167,13 @@
                         <thead>
                             <tr>
                                 <th>Numero Telefono</th>
+                                <th>Intestatario</th>
                                 <th>Data Attivazione</th>
                                 <th>Tipo Contratto</th>
-                                <th>Residuo (Credito / Minuti)</th>
+                                <th>Residuo</th>
                             </tr>
                         </thead>
                         <tbody id="results-tbody-contratti">
-                            <tr class="clickable-row row-contratto" data-tel="333123456">
-                                <td>333123456</td>
-                                <td>15/01/2024</td>
-                                <td>Ricarica</td>
-                                <td>12,50 €</td>
-                            </tr>
-                            <tr class="clickable-row row-contratto" data-tel="339987654">
-                                <td>339987654</td>
-                                <td>10/05/2025</td>
-                                <td>Consumo</td>
-                                <td>140 Minuti</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -221,8 +201,10 @@
                             <tr>
                                 <th>Codice SIM</th>
                                 <th>Tipo</th>
+                                <th>Stato</th>
                                 <th>Telefono Associato</th>
                                 <th>Data Attivazione</th>
+                                <th>Data Disattivazione</th>
                             </tr>
                         </thead>
                         <tbody id="results-tbody-sim">

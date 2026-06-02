@@ -2,66 +2,69 @@
    1. STILI BASE E SCROLLBAR (Originali)
    ========================================= */
 .example::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 .example {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body{
+body {
     min-height: 100vh;
     font-family: 'Roboto', sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: var(--bg-primary, #ffffff); /* Fallback per light mode */
+    background-color: var(--bg-primary, #ffffff);
+    /* Fallback per light mode */
 }
 
-body, body * {
+body,
+body * {
     transition: background-color 0.3s ease,
-                color 0.3s ease,
-                border-color 0.3s ease;
+        color 0.3s ease,
+        border-color 0.3s ease;
 }
 
 /* =========================================
    2. HEADER E NAVBAR (Originali)
    ========================================= */
-.header{
+.header {
     background-color: var(--salmon-dark);
     width: 100vw;
     height: 10vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #FFFFFF; /* Testo header sempre bianco o usa var(--text-light) */
+    color: #FFFFFF;
+    /* Testo header sempre bianco o usa var(--text-light) */
     padding: 0 1rem;
     font-size: var(--title);
 }
 
-.theme-mode-container-dummy{
+.theme-mode-container-dummy {
     visibility: hidden;
 }
 
-.theme-mode-container:hover{
+.theme-mode-container:hover {
     cursor: pointer;
 }
 
-.navbar{
+.navbar {
     width: 100vw;
     min-height: 5vh;
     background-color: var(--salmon-primary);
 }
 
-.navbar-list{
+.navbar-list {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -71,7 +74,7 @@ body, body * {
     margin: 0;
 }
 
-.navbar-list li{
+.navbar-list li {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -81,7 +84,7 @@ body, body * {
     transition: background-color 0.3s ease;
 }
 
-.navbar-list a{
+.navbar-list a {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -89,18 +92,19 @@ body, body * {
     height: 100%;
     padding: 1rem 2rem;
     text-decoration: none;
-    color: #FFFFFF; /* Manteniamo bianco sulla navbar salmone */
+    color: #FFFFFF;
+    /* Manteniamo bianco sulla navbar salmone */
 }
 
-.navbar-list li:hover{
-    background-color: var(--salmon-light);    
+.navbar-list li:hover {
+    background-color: var(--salmon-light);
     cursor: pointer;
 }
 
 /* =========================================
    3. LAYOUT PRINCIPALE SEZIONI
    ========================================= */
-.filters-container{
+.filters-container {
     min-height: 10vh;
     width: 100vw;
     display: flex;
@@ -112,18 +116,20 @@ body, body * {
 }
 
 .content-container {
-    flex: 1; 
+    flex: 1;
     width: 100vw;
     background-color: var(--salmon-ultra-light);
-    display: flex; 
-    justify-content: flex-start; /* Mantiene la tabella in alto e non al centro della pagina verticalmente */
-    align-items: center; /* Centra perfettamente la tabella orizzontalmente */
-    flex-direction: column; 
-    color: var(--text-primary); 
+    display: flex;
+    justify-content: flex-start;
+    /* Mantiene la tabella in alto e non al centro della pagina verticalmente */
+    align-items: center;
+    /* Centra perfettamente la tabella orizzontalmente */
+    flex-direction: column;
+    color: var(--text-primary);
     padding-bottom: 2rem;
 }
 
-.centering-content{
+.centering-content {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -189,32 +195,54 @@ body, body * {
     align-items: center;
     gap: 0.4rem;
     transition: background 0.2s, opacity 0.2s;
-    color: #4A4A4A; /* Testo scuro di base per contrasto sui colori chiari */
+    color: #4A4A4A;
+    /* Testo scuro di base per contrasto sui colori chiari */
 }
 
-.btn:hover { opacity: 0.8; }
-.btn-primary { background-color: var(--salmon-primary); }
-.btn-success { background-color: var(--success); }
-.btn-danger { background-color: var(--error); }
-.btn-secondary { background-color: var(--info); }
-.btn-full { width: 100%; justify-content: center; }
+.btn:hover {
+    opacity: 0.8;
+}
+
+.btn-primary {
+    background-color: var(--salmon-primary);
+}
+
+.btn-success {
+    background-color: var(--success);
+}
+
+.btn-danger {
+    background-color: var(--error);
+}
+
+.btn-secondary {
+    background-color: var(--info);
+}
+
+.btn-full {
+    width: 100%;
+    justify-content: center;
+}
 
 /* Contenitori a griglia per la tabella */
-.grid-container { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 2rem; 
-    width: 90%; 
-    max-width: 1200px; 
-    padding: 2rem 0; 
-    margin: 0 auto; /* Questo forza ulteriormente la centratura orizzontale */
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 90%;
+    max-width: 1200px;
+    padding: 2rem 0;
+    margin: 0 auto;
+    /* Questo forza ulteriormente la centratura orizzontale */
 }
 
-.table-wrapper, .admin-card {
-    background-color: var(--bg-card, #ffffff); /* Sfondo bianco in light, scuro in dark */
+.table-wrapper,
+.admin-card {
+    background-color: var(--bg-card, #ffffff);
+    /* Sfondo bianco in light, scuro in dark */
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
 }
 
@@ -234,7 +262,8 @@ body, body * {
     color: var(--text-primary);
 }
 
-.admin-table th, .admin-table td {
+.admin-table th,
+.admin-table td {
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid var(--border-light);
@@ -253,8 +282,14 @@ body, body * {
     background-color: var(--salmon-ultra-light);
 }
 
-.text-center { text-align: center !important; }
-.text-danger { color: var(--error); font-weight: bold; }
+.text-center {
+    text-align: center !important;
+}
+
+.text-danger {
+    color: var(--error);
+    font-weight: bold;
+}
 
 /* Bottoni d'azione riga */
 .action-buttons {
@@ -272,8 +307,13 @@ body, body * {
     font-size: var(--paragraph);
 }
 
-.btn-edit { background-color: var(--warning); }
-.btn-delete { background-color: var(--error); }
+.btn-edit {
+    background-color: var(--warning);
+}
+
+.btn-delete {
+    background-color: var(--error);
+}
 
 /* =========================================
    6. FORM E INPUT (Stipula, Modifica, Crea)
@@ -300,7 +340,8 @@ body, body * {
     flex: 1;
 }
 
-.admin-form input, .admin-form select {
+.admin-form input,
+.admin-form select {
     padding: 0.6rem;
     border: 1px solid var(--border-light);
     border-radius: 4px;
@@ -322,29 +363,41 @@ body, body * {
 }
 
 /* Regole Vecchie per Stipula Contratto (Mantenute e Adattate) */
-.type-container{
+.type-container {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
 }
 
-.form-label{
+.form-label {
     color: var(--text-secondary);
     font-size: var(--note);
 }
 
-.optional-container{
+.optional-container {
     transition: 1s;
     flex-direction: column;
     gap: 0.3rem;
     display: none;
 }
 
-.quantity-container { display: flex; gap: 0.5rem; align-items: center; }
-.quantity-input{ min-width: 30%; max-width: 40%; }
-.quantity-unit{ font-size: var(--note); color: var(--text-primary); }
+.quantity-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
 
-.startup-request{
+.quantity-input {
+    min-width: 30%;
+    max-width: 40%;
+}
+
+.quantity-unit {
+    font-size: var(--note);
+    color: var(--text-primary);
+}
+
+.startup-request {
     font-size: var(--note);
     transition: 0.5s ease-in-out;
     color: var(--text-secondary);
@@ -355,8 +408,11 @@ body, body * {
    ========================================= */
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.6);
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -370,7 +426,7 @@ body, body * {
     border-radius: 8px;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .modal-details {
@@ -391,7 +447,7 @@ body, body * {
 /* =========================================
    8. FOOTER
    ========================================= */
-footer{
+footer {
     height: 5vh;
     width: 100vw;
     display: flex;
@@ -405,14 +461,16 @@ footer{
 /* =========================================
    9. FIX SPECIFICI PER LA DARK MODE
    ========================================= */
-.dark-mode .table-wrapper, 
-.dark-mode .admin-card, 
+.dark-mode .table-wrapper,
+.dark-mode .admin-card,
 .dark-mode .modal-box {
-    background-color: var(--bg-card); /* Usa il grigio scuro in dark mode */
+    background-color: var(--bg-card);
+    /* Usa il grigio scuro in dark mode */
 }
 
 .dark-mode .admin-table th {
-    background-color: var(--salmon-muted); /* Colore testata tabella scura */
+    background-color: var(--salmon-muted);
+    /* Colore testata tabella scura */
     color: var(--text-primary);
 }
 
@@ -424,12 +482,59 @@ footer{
     background-color: var(--bg-elevated);
 }
 
-.dark-mode input, .dark-mode select {
+.dark-mode input,
+.dark-mode select {
     background-color: var(--bg-secondary);
     color: var(--text-primary);
     border-color: var(--border-light);
 }
 
 /* Fix testo bottoni in dark mode per renderli leggibili */
-.dark-mode .btn { color: var(--bg-primary); }
-.dark-mode .btn-action { color: var(--bg-primary); }
+.dark-mode .btn {
+    color: var(--bg-primary);
+}
+
+.dark-mode .btn-action {
+    color: var(--bg-primary);
+}
+
+
+
+/* Messaggi di risposta per i form */
+.response-container {
+    margin-bottom: 1rem;
+}
+
+.success-message {
+    background-color: var(--success);
+    color: #2D4A22;
+    padding: 1rem;
+    border-radius: 5px;
+    border-left: 4px solid #3D6A2E;
+}
+
+.error-message {
+    background-color: var(--error);
+    color: #4A2222;
+    padding: 1rem;
+    border-radius: 5px;
+    border-left: 4px solid #6A2E2E;
+}
+
+.info-message {
+    background-color: var(--info);
+    color: #2A3A4A;
+    padding: 1rem;
+    border-radius: 5px;
+    border-left: 4px solid #3A4A6A;
+}
+
+.success-message h4,
+.error-message h4 {
+    margin-bottom: 0.5rem;
+}
+
+.success-message ul,
+.error-message ul {
+    margin-left: 1.5rem;
+}
