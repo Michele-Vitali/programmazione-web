@@ -538,3 +538,26 @@ footer {
 .error-message ul {
     margin-left: 1.5rem;
 }
+/* =============================================
+   LINK CLICCABILI — evidenziazione visiva
+   ============================================= */
+.link-tel,
+.link-nominativo {
+    color: var(--salmon-dark);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.15s, opacity 0.15s;
+}
+
+.link-tel:hover,
+.link-nominativo:hover {
+    opacity: 0.75;
+    text-decoration: underline;
+}
+
+.dark-mode .link-tel,
+.dark-mode .link-nominativo {
+    color: var(--salmon-primary);
+}

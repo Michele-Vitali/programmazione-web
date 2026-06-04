@@ -143,7 +143,7 @@ $(document).ready(function () {
     // =============================================
     // 7. PULSANTE AGGIUNGI TELEFONATA veloce
     // =============================================
-    $(document).on('click', '.btn-add-call-quick', function (e) {
+    $(document).on('click', '.btn-add-call-quick, .btn-go-inserisci', function (e) {
         e.stopPropagation();
         const tel = $(this).data('tel');
         navigaSezione('section-crea-chiamata');
@@ -189,7 +189,7 @@ $(document).ready(function () {
     // =============================================
     $('#insert-tel').autocomplete({
         source: function (req, resp) {
-            $.get('../php/search_autocomplete.php', { q: req.term, tipo: 'telefonate' }, function (data) {
+            $.get('../php/search_autocomplete.php', { q: req.term, tipo: 'insert' }, function (data) {
                 resp(data);
             }, 'json');
         },
@@ -241,19 +241,52 @@ $(document).ready(function () {
         });
     });
 
-    // Calcolo automatico costo per ricarica quando cambia durata
+    // Flag per evitare loop di aggiornamento reciproco
+    let _aggiornandoCosto    = false;
+    let _aggiornandoDurata   = false;
+
+    // Calcolo automatico costo quando cambia durata (ricarica)
     function aggiornaCostoCalcolato() {
+        if (_aggiornandoCosto) return;
         if ($('#insert-tipo').val() === 'ricarica') {
-            const min = parseInt($('#insert-duration').val()) || 0;
-            $('#insert-cost').val((min * TARIFFA_AL_MINUTO).toFixed(2));
+            _aggiornandoDurata = true;
+            const min = parseFloat($('#insert-duration').val()) || 0;
+            // durata negativa non ammessa → usiamo abs per il costo ma il campo rimane >= 0
+            $('#insert-cost').val((Math.abs(min) * TARIFFA_AL_MINUTO).toFixed(2));
+            _aggiornandoDurata = false;
         }
     }
-    $('#insert-duration').on('input', aggiornaCostoCalcolato);
 
-    // Per consumo, i minuti da scalare seguono automaticamente la durata
+    // Calcolo inverso: dato il costo, calcola la durata (ricarica)
+    function aggiornaDurataCalcolata() {
+        if (_aggiornandoDurata) return;
+        if ($('#insert-tipo').val() === 'ricarica') {
+            _aggiornandoCosto = true;
+            const costo = parseFloat($('#insert-cost').val());
+            if (!isNaN(costo) && TARIFFA_AL_MINUTO > 0) {
+                // Se costo negativo → durata è il modulo (valore positivo)
+                const durata = Math.round(Math.abs(costo) / TARIFFA_AL_MINUTO);
+                $('#insert-duration').val(durata);
+            }
+            _aggiornandoCosto = false;
+        }
+    }
+
+    $('#insert-duration').on('input', aggiornaCostoCalcolato);
+    $('#insert-cost').on('input', aggiornaDurataCalcolata);
+
+    // Per consumo: durata e minuti si sincronizzano
+    // - se cambia durata → minuti = durata (già >= 0)
+    // - se cambia minuti → durata = |minuti| (i minuti possono essere negativi)
     $('#insert-duration').on('input', function () {
         if ($('#insert-tipo').val() === 'consumo') {
             $('#insert-minuti').val($(this).val());
+        }
+    });
+    $('#insert-minuti').on('input', function () {
+        if ($('#insert-tipo').val() === 'consumo') {
+            const min = parseFloat($(this).val()) || 0;
+            $('#insert-duration').val(Math.abs(min));
         }
     });
 

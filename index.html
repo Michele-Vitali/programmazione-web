@@ -155,11 +155,11 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="insert-duration">Durata (minuti):</label>
-                                <input type="number" name="durata" id="insert-duration" value="" required>
+                                <input type="number" name="durata" id="insert-duration" value="" min="0" required>
                             </div>
                             <!-- Mostrato solo per contratti ricarica -->
                             <div class="form-group" id="field-costo" style="display:none;">
-                                <label for="insert-cost">Costo (€) — calcolato automaticamente, modificabile:</label>
+                                <label for="insert-cost">Costo (€):</label>
                                 <input type="number" name="costo" id="insert-cost" step="0.01" value="">
                             </div>
                             <!-- Mostrato solo per contratti consumo -->

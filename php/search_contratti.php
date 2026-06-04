@@ -88,8 +88,8 @@ if ($result->num_rows > 0) {
                 <button class='btn-action btn-refresh-residuo' title='Aggiorna residuo' data-tel='{$tel}'>
                   <i class='fa-solid fa-rotate'></i>
                 </button>
-                <button class='btn-action btn-add-call-quick' title='Aggiungi telefonata' data-tel='{$tel}'>
-                  <i class='fa-solid fa-phone-plus'></i>
+                <button class='btn-action btn-go-inserisci' title='Vai a Inserisci telefonata' data-tel='{$tel}'>
+                  <i class='fa-solid fa-arrow-right-to-bracket'></i>
                 </button>
               </td>";
         echo "</tr>";
