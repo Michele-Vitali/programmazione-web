@@ -40,7 +40,7 @@ if ($result->num_rows > 0) {
         
         // Residuo: mostriamo il valore giusto in base al tipo
         echo "<td>";
-        if ($row['tipo'] == 'Ricarica') {
+        if ($row['tipo'] == 'ricarica') {
             // Mostra credito in euro
             echo number_format($row['creditoResiduo'], 2, ',', '') . " €";
         } else {
