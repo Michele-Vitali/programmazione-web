@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="./css/index.css">
+    <!-- jQuery UI per autocomplete -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://kit.fontawesome.com/c58b9694dc.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-4.0.0.min.js"
-        integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script src="./js/index.js"></script>
     <title>UniFon - BackOffice</title>
 </head>
@@ -33,22 +35,39 @@
         </ul>
     </nav>
 
+    <!-- ===== GESTIONE TELEFONATE ===== -->
     <div id="section-gestione" class="page-section active-section">
         <section class="filters-container">
             <div class="filters">
-                <label for="search-input">Cerca Utente (Nome, Cognome o Telefono):</label>
+                <label>Cerca Utente (Nome, Cognome o Telefono):</label>
                 <div class="search-box">
                     <input type="text" id="search-input" placeholder="Es. Mario Rossi o 333...">
-                    <button id="btn-search-telefonate" class="btn btn-primary"><i
-                            class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+                    <button id="btn-search-telefonate" class="btn btn-primary">
+                        <i class="fa-solid fa-magnifying-glass"></i> Cerca
+                    </button>
                 </div>
+                <div class="search-box" style="margin-top:8px; gap:6px; align-items:center;">
+                    <label style="white-space:nowrap; font-size:0.85rem;">Dal:</label>
+                    <input type="date" id="search-date-from" style="flex:1;">
+                    <label style="white-space:nowrap; font-size:0.85rem;">Al:</label>
+                    <input type="date" id="search-date-to" style="flex:1;">
+                    <button id="btn-reset-date" class="btn btn-secondary" title="Cancella filtro date">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="last-query-label" class="last-query-label" style="display:none;"></div>
             </div>
         </section>
 
         <section class="content-container">
             <div class="centering-content grid-container">
                 <div class="table-wrapper">
-                    <h3>Risultati Ricerca Chiamate</h3>
+                    <div class="table-header-row">
+                        <h3>Risultati Ricerca Chiamate</h3>
+                        <button id="btn-refresh-tel" class="btn btn-secondary btn-sm" title="Aggiorna risultati">
+                            <i class="fa-solid fa-rotate"></i> Aggiorna
+                        </button>
+                    </div>
                     <table class="admin-table">
                         <thead>
                             <tr>
@@ -61,14 +80,16 @@
                             </tr>
                         </thead>
                         <tbody id="results-tbody-telefonate">
-                            <!-- Riempito via AJAX -->
+                            <tr><td colspan="6" class="text-center text-muted">
+                                <i class="fa-solid fa-magnifying-glass"></i> Usa la ricerca per trovare le telefonate
+                            </td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div id="edit-panel" class="admin-card hidden-element">
                     <h3 id="edit-title">Modifica Chiamata</h3>
-                    <form action="update_call.php" method="POST" class="admin-form">
+                    <form id="form-edit-call" class="admin-form">
                         <input type="hidden" name="id_chiamata" id="edit-id">
                         <div class="form-group">
                             <label>Utente selezionato:</label>
@@ -87,7 +108,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="edit-duration">Durata (minuti):</label>
-                                <input type="number" name="durata" id="edit-duration" min="0" required>
+                                <input type="number" name="durata" id="edit-duration" required>
                             </div>
                             <div class="form-group">
                                 <label for="edit-cost">Costo (€):</label>
@@ -103,22 +124,23 @@
             </div>
         </section>
     </div>
+
+    <!-- ===== INSERISCI TELEFONATA ===== -->
     <div id="section-crea-chiamata" class="page-section hidden-element">
         <section class="content-container">
             <div class="centering-content grid-container">
                 <div class="admin-card">
-                    <h2>Inserisci Chiamata Tecnica / Manuale</h2>
-                    <p class="form-subtitle">Usa questa sezione per inserire storni o transazioni correttive a costo
-                        zero o negativo.</p>
+                    <h2>Inserisci Telefonata</h2>
+                    <p class="form-subtitle">Registra una nuova telefonata. Il costo viene calcolato automaticamente per i contratti ricarica (€0,28/min) ma è modificabile. Durata e costo/minuti negativi sono ammessi per correzioni.</p>
 
-                    <!-- Il messaggio di risposta appare qui -->
                     <div id="insert-response" class="response-container"></div>
 
-                    <form id="form-insert-call" class="admin-form">
-                        <div class="form-group">
-                            <label for="insert-tel">Numero di Telefono del Contratto:</label>
-                            <input type="text" name="telefono" id="insert-tel" required placeholder="Es. 333123456">
+                    <form id="form-insert-call" class="admin-form" autocomplete="off">
+                        <div class="form-group" style="position:relative;">
+                            <label for="insert-tel">Numero di Telefono (o cerca per nominativo):</label>
+                            <input type="text" id="insert-tel" name="telefono" required placeholder="Es. 333123456 o Mario Rossi">
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="insert-date">Data:</label>
@@ -129,22 +151,27 @@
                                 <input type="time" name="ora" id="insert-time" required>
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="insert-duration">Durata (minuti):</label>
-                                <input type="number" name="durata" id="insert-duration" min="1" value="" required>
+                                <input type="number" name="durata" id="insert-duration" value="" required>
                             </div>
+                            <!-- Mostrato solo per contratti ricarica -->
                             <div class="form-group" id="field-costo" style="display:none;">
-                                <label for="insert-cost">Costo (€):</label>
+                                <label for="insert-cost">Costo (€) — calcolato automaticamente, modificabile:</label>
                                 <input type="number" name="costo" id="insert-cost" step="0.01" value="">
                             </div>
+                            <!-- Mostrato solo per contratti consumo -->
                             <div class="form-group" id="field-minuti" style="display:none;">
                                 <label for="insert-minuti">Minuti da scalare:</label>
-                                <input type="number" name="minuti_scalati" id="insert-minuti" min="1" value="">
+                                <input type="number" name="minuti_scalati" id="insert-minuti" value="">
                             </div>
                         </div>
+
                         <input type="hidden" name="tipo_contratto" id="insert-tipo">
                         <div id="insert-tipo-info" class="form-subtitle" style="display:none;"></div>
+
                         <button type="submit" class="btn btn-success btn-full">
                             <i class="fa-solid fa-phone"></i> Registra Chiamata
                         </button>
@@ -154,21 +181,28 @@
         </section>
     </div>
 
+    <!-- ===== CERCA CONTRATTI ===== -->
     <div id="section-contratti" class="page-section hidden-element">
         <section class="filters-container">
             <div class="filters">
                 <label for="search-input-contratti">Cerca Contratto per numero telefono o nominativo:</label>
                 <div class="search-box">
-                    <input type="text" id="search-input-contratti" placeholder="Es. Mario Rossi o +39 339 666 3890">
-                    <button id="btn-search-contratti" class="btn btn-primary"><i
-                            class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+                    <input type="text" id="search-input-contratti" placeholder="Es. Mario Rossi o 339...">
+                    <button id="btn-search-contratti" class="btn btn-primary">
+                        <i class="fa-solid fa-magnifying-glass"></i> Cerca
+                    </button>
                 </div>
             </div>
         </section>
         <section class="content-container">
             <div class="centering-content grid-container">
                 <div class="table-wrapper">
-                    <h3>Elenco Contratti Telefonici</h3>
+                    <div class="table-header-row">
+                        <h3>Elenco Contratti Telefonici</h3>
+                        <button id="btn-refresh-contratti" class="btn btn-secondary btn-sm" title="Aggiorna risultati">
+                            <i class="fa-solid fa-rotate"></i> Aggiorna
+                        </button>
+                    </div>
                     <table class="admin-table">
                         <thead>
                             <tr>
@@ -177,9 +211,13 @@
                                 <th>Data Attivazione</th>
                                 <th>Tipo Contratto</th>
                                 <th>Residuo</th>
+                                <th class="text-center">Azioni</th>
                             </tr>
                         </thead>
                         <tbody id="results-tbody-contratti">
+                            <tr><td colspan="6" class="text-center text-muted">
+                                <i class="fa-solid fa-magnifying-glass"></i> Usa la ricerca per trovare i contratti
+                            </td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -187,21 +225,28 @@
         </section>
     </div>
 
+    <!-- ===== CERCA SIM ===== -->
     <div id="section-sim" class="page-section hidden-element">
         <section class="filters-container">
             <div class="filters">
-                <label for="search-input-sim">Cerca SIM (Codice ICCID o Telefono):</label>
+                <label for="search-input-sim">Cerca SIM per codice ICCID o numero telefono associato:</label>
                 <div class="search-box">
-                    <input type="text" id="search-input-sim" placeholder="Es. 8939...">
-                    <button id="btn-search-sim" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>
-                        Cerca</button>
+                    <input type="text" id="search-input-sim" placeholder="Es. 8939... o 333...">
+                    <button id="btn-search-sim" class="btn btn-primary">
+                        <i class="fa-solid fa-magnifying-glass"></i> Cerca
+                    </button>
                 </div>
             </div>
         </section>
         <section class="content-container">
             <div class="centering-content grid-container">
                 <div class="table-wrapper">
-                    <h3>Storico e Gestione SIM</h3>
+                    <div class="table-header-row">
+                        <h3>Storico e Gestione SIM</h3>
+                        <button id="btn-refresh-sim" class="btn btn-secondary btn-sm" title="Aggiorna risultati">
+                            <i class="fa-solid fa-rotate"></i> Aggiorna
+                        </button>
+                    </div>
                     <table class="admin-table">
                         <thead>
                             <tr>
@@ -214,6 +259,9 @@
                             </tr>
                         </thead>
                         <tbody id="results-tbody-sim">
+                            <tr><td colspan="6" class="text-center text-muted">
+                                <i class="fa-solid fa-magnifying-glass"></i> Usa la ricerca per trovare le SIM
+                            </td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -221,17 +269,18 @@
         </section>
     </div>
 
+    <!-- ===== MODALE ELIMINAZIONE ===== -->
     <div id="delete-modal" class="modal-overlay hidden-element">
         <div class="modal-box">
             <h3><i class="fa-solid fa-triangle-exclamation text-danger"></i> Conferma Eliminazione</h3>
-            <p>Sei sicuro di voler eliminare definitivamente questo record telefonico? L'operazione ricalcolerà il
-                bilancio del cliente.</p>
+            <p>Sei sicuro di voler eliminare questa telefonata? Il residuo del contratto verrà ripristinato automaticamente.</p>
             <div class="modal-details">
                 <p><strong>Utente:</strong> <span id="del-user"></span></p>
                 <p><strong>Telefono:</strong> <span id="del-tel"></span></p>
                 <p><strong>Costo Record:</strong> <span id="del-cost"></span></p>
             </div>
-            <form action="delete_call.php" method="POST">
+            <div id="delete-response" class="response-container"></div>
+            <form id="form-delete-call">
                 <input type="hidden" name="id_chiamata" id="delete-id">
                 <div class="modal-actions">
                     <button type="button" id="btn-cancel-del" class="btn btn-secondary">Annulla</button>
@@ -239,6 +288,21 @@
                 </div>
             </form>
         </div>
+    </div>
+
+    <!-- ===== PANNELLO RESIDUO ===== -->
+    <div id="residuo-panel" class="residuo-toast hidden-element">
+        <span id="residuo-text"></span>
+        <button id="btn-close-residuo" title="Chiudi"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- ===== CONTEXT MENU ===== -->
+    <div id="context-menu" class="context-menu hidden-element">
+        <ul>
+            <li id="ctx-add-call"><i class="fa-solid fa-phone-plus"></i> Aggiungi telefonata</li>
+            <li id="ctx-show-residuo"><i class="fa-solid fa-wallet"></i> Mostra residuo</li>
+            <li id="ctx-copy-tel"><i class="fa-regular fa-copy"></i> Copia numero</li>
+        </ul>
     </div>
 
     <footer>
