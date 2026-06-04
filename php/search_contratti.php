@@ -2,12 +2,36 @@
 // php/search_contratti.php
 require_once 'utils/dbconn.php';
 
-$ricerca = isset($_GET['q']) ? $_GET['q'] : '';
+$ricerca = isset($_GET['q']) ? trim($_GET['q']) : '';
 
-// Cerchiamo nel numero di telefono OPPURE nel nominativo
-$sql = "SELECT * FROM ContrattoTelefonico 
-        WHERE numero LIKE ? 
-        OR nominativo LIKE ? 
+// Se la ricerca corrisponde esattamente a un numero (chiamata dal form insert),
+// rispondiamo con JSON per consentire al JS di sapere il tipo contratto
+$exact_sql = "SELECT tipo, minutiResidui, creditoResiduo FROM ContrattoTelefonico WHERE numero = ?";
+$stmt_exact = $conn->prepare($exact_sql);
+if ($stmt_exact) {
+    $stmt_exact->bind_param("s", $ricerca);
+    $stmt_exact->execute();
+    $res_exact = $stmt_exact->get_result();
+    if ($res_exact->num_rows === 1) {
+        // Risposta JSON usata dal form inserimento telefonata
+        $row = $res_exact->fetch_assoc();
+        $residuo = ($row['tipo'] === 'ricarica') ? $row['creditoResiduo'] : $row['minutiResidui'];
+        header('Content-Type: application/json');
+        echo json_encode([
+            'tipo'    => $row['tipo'],
+            'residuo' => $residuo
+        ]);
+        $stmt_exact->close();
+        $conn->close();
+        exit;
+    }
+    $stmt_exact->close();
+}
+
+// Altrimenti: ricerca per tabella (numero o nominativo) — risposta HTML
+$sql = "SELECT * FROM ContrattoTelefonico
+        WHERE numero LIKE ?
+        OR nominativo LIKE ?
         ORDER BY nominativo";
 
 $stmt = $conn->prepare($sql);
@@ -16,8 +40,6 @@ if (!$stmt) {
 }
 
 $like = "%" . $ricerca . "%";
-
-// Due segnaposto: uno per numero, uno per nominativo
 $stmt->bind_param("ss", $like, $like);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -25,30 +47,17 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         echo "<tr class='clickable-row row-contratto' data-tel='" . htmlspecialchars($row['numero']) . "'>";
-        
-        // Numero di telefono
         echo "<td>" . htmlspecialchars($row['numero']) . "</td>";
-        
-        // Nominativo (se NULL mostriamo un trattino)
         echo "<td>" . htmlspecialchars($row['nominativo'] ?? '-') . "</td>";
-        
-        // Data attivazione
         echo "<td>" . htmlspecialchars($row['dataAttivazione']) . "</td>";
-        
-        // Tipo contratto
         echo "<td>" . htmlspecialchars($row['tipo']) . "</td>";
-        
-        // Residuo: mostriamo il valore giusto in base al tipo
         echo "<td>";
-        if ($row['tipo'] == 'ricarica') {
-            // Mostra credito in euro
+        if ($row['tipo'] === 'ricarica') {
             echo number_format($row['creditoResiduo'], 2, ',', '') . " €";
         } else {
-            // Mostra minuti
             echo $row['minutiResidui'] . " Minuti";
         }
         echo "</td>";
-        
         echo "</tr>";
     }
 } else {

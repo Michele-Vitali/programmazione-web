@@ -109,53 +109,112 @@ $(document).ready(function () {
         });
     });
 
-    // 10 INSERIMENTO TELEFONATA (AJAX)
+    // 10a - Quando si esce dal campo telefono, cerca il tipo contratto e mostra il campo giusto
+    $('#insert-tel').on('blur', function () {
+        const telefono = $(this).val().trim();
+        if (telefono === '') return;
+
+        $.ajax({
+            url: '../php/search_contratti.php',
+            type: 'GET',
+            data: { q: telefono },
+            dataType: 'json',
+            success: function (data) {
+                if (data && data.tipo) {
+                    $('#insert-tipo').val(data.tipo);
+                    if (data.tipo === 'ricarica') {
+                        $('#field-minuti').hide();
+                        $('#insert-minuti').val('');
+                        $('#field-costo').show();
+                        $('#insert-tipo-info')
+                            .html('<i class="fa-solid fa-circle-info"></i> Contratto <strong>Ricarica</strong> — credito residuo attuale: <strong>' + parseFloat(data.residuo).toFixed(2) + ' €</strong>')
+                            .show();
+                    } else {
+                        $('#field-costo').hide();
+                        $('#insert-cost').val('');
+                        $('#field-minuti').show();
+                        $('#insert-tipo-info')
+                            .html('<i class="fa-solid fa-circle-info"></i> Contratto <strong>Consumo</strong> — minuti residui attuali: <strong>' + data.residuo + ' min</strong>')
+                            .show();
+                    }
+                } else {
+                    $('#field-costo').hide();
+                    $('#field-minuti').hide();
+                    $('#insert-tipo').val('');
+                    $('#insert-tipo-info').hide();
+                }
+            },
+            error: function () {
+                $('#insert-tipo-info').html('<div class="error-message">⚠️ Impossibile verificare il contratto</div>').show();
+            }
+        });
+    });
+
+    // 10b INSERIMENTO TELEFONATA (AJAX)
     $('#form-insert-call').on('submit', function (e) {
-        // Blocco l'invio tradizionale del form (che ricaricherebbe la pagina)
         e.preventDefault();
 
-        // Prendo i dati dal form
-        const formData = {
-            telefono: $('#insert-tel').val().trim(),
-            data: $('#insert-date').val(),
-            ora: $('#insert-time').val(),
-            durata: $('#insert-duration').val(),
-            costo: $('#insert-cost').val()
-        };
+        const tipo = $('#insert-tipo').val();
+        const telefono = $('#insert-tel').val().trim();
+        const data_val = $('#insert-date').val();
+        const ora_val  = $('#insert-time').val();
+        const durata   = $('#insert-duration').val();
 
-        // Validazione lato client (prima di inviare al server)
-        if (formData.telefono === '') {
+        // Validazione lato client
+        if (telefono === '') {
             $('#insert-response').html('<div class="error-message">⚠️ Inserisci un numero di telefono</div>');
             return;
         }
-        if (formData.data === '') {
+        if (tipo === '') {
+            $('#insert-response').html('<div class="error-message">⚠️ Numero non riconosciuto — verifica che il contratto esista</div>');
+            return;
+        }
+        if (data_val === '') {
             $('#insert-response').html('<div class="error-message">⚠️ Seleziona una data</div>');
             return;
         }
-        if (formData.ora === '') {
+        if (ora_val === '') {
             $('#insert-response').html('<div class="error-message">⚠️ Seleziona un\'ora</div>');
             return;
         }
+        if (!durata || parseInt(durata) <= 0) {
+            $('#insert-response').html('<div class="error-message">⚠️ La durata deve essere maggiore di zero</div>');
+            return;
+        }
+        if (tipo === 'ricarica' && ($('#insert-cost').val() === '' || parseFloat($('#insert-cost').val()) <= 0)) {
+            $('#insert-response').html('<div class="error-message">⚠️ Inserisci il costo in euro per questo contratto ricarica</div>');
+            return;
+        }
+        if (tipo === 'consumo' && ($('#insert-minuti').val() === '' || parseInt($('#insert-minuti').val()) <= 0)) {
+            $('#insert-response').html('<div class="error-message">⚠️ Inserisci i minuti da scalare per questo contratto consumo</div>');
+            return;
+        }
 
-        // Mostro caricamento
+        const formData = {
+            telefono:       telefono,
+            data:           data_val,
+            ora:            ora_val,
+            durata:         durata,
+            tipo_contratto: tipo,
+            costo:          tipo === 'ricarica' ? $('#insert-cost').val() : 0,
+            minuti_scalati: tipo === 'consumo'  ? $('#insert-minuti').val() : 0
+        };
+
         $('#insert-response').html('<div class="info-message"><i class="fa-solid fa-spinner fa-pulse"></i> Registrazione in corso...</div>');
 
-        // Invio i dati al server con AJAX
         $.ajax({
             url: '../php/insert_call.php',
             type: 'POST',
             data: formData,
             dataType: 'html',
             success: function (response) {
-                // Mostro la risposta del server (successo o errori)
                 $('#insert-response').html(response);
-
-                // Se l'inserimento ha avuto successo, resetto il form
                 if (response.includes('successo')) {
                     $('#form-insert-call')[0].reset();
-                    // Reimposto i valori di default
-                    $('#insert-duration').val('0');
-                    $('#insert-cost').val('0.00');
+                    $('#field-costo').hide();
+                    $('#field-minuti').hide();
+                    $('#insert-tipo-info').hide();
+                    $('#insert-tipo').val('');
                 }
             },
             error: function () {

@@ -132,13 +132,19 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="insert-duration">Durata (minuti):</label>
-                                <input type="number" name="durata" id="insert-duration" min="0" value="0" required>
+                                <input type="number" name="durata" id="insert-duration" min="1" value="" required>
                             </div>
-                            <div class="form-group">
-                                <label for="insert-cost">Costo (usa valori negativi per storni):</label>
-                                <input type="number" name="costo" id="insert-cost" step="0.01" value="0.00" required>
+                            <div class="form-group" id="field-costo" style="display:none;">
+                                <label for="insert-cost">Costo (€):</label>
+                                <input type="number" name="costo" id="insert-cost" step="0.01" value="">
+                            </div>
+                            <div class="form-group" id="field-minuti" style="display:none;">
+                                <label for="insert-minuti">Minuti da scalare:</label>
+                                <input type="number" name="minuti_scalati" id="insert-minuti" min="1" value="">
                             </div>
                         </div>
+                        <input type="hidden" name="tipo_contratto" id="insert-tipo">
+                        <div id="insert-tipo-info" class="form-subtitle" style="display:none;"></div>
                         <button type="submit" class="btn btn-success btn-full">
                             <i class="fa-solid fa-phone"></i> Registra Chiamata
                         </button>
