@@ -438,18 +438,83 @@ $(document).ready(function () {
     // =============================================
     // 14. MODIFICA TELEFONATA
     // =============================================
+
+    // Flag anti-loop per il pannello modifica (stessa logica dell'inserimento)
+    let _editAggiornandoCosto  = false;
+    let _editAggiornandoDurata = false;
+
+    // ricarica: durata cambia → ricalcola costo
+    $('#edit-duration').on('input', function () {
+        if (_editAggiornandoDurata) return;
+        const tipo = $('#edit-tipo').val();
+        if (tipo === 'ricarica') {
+            _editAggiornandoCosto = true;
+            const min = parseFloat($(this).val()) || 0;
+            $('#edit-cost').val((Math.abs(min) * TARIFFA_AL_MINUTO).toFixed(2));
+            _editAggiornandoCosto = false;
+        } else if (tipo === 'consumo') {
+            // consumo: durata cambia → minuti seguono
+            $('#edit-minuti').val($(this).val());
+        }
+    });
+
+    // ricarica: costo cambia → ricalcola durata (formula inversa)
+    $('#edit-cost').on('input', function () {
+        if (_editAggiornandoCosto) return;
+        if ($('#edit-tipo').val() === 'ricarica') {
+            _editAggiornandoDurata = true;
+            const costo = parseFloat($(this).val());
+            if (!isNaN(costo) && TARIFFA_AL_MINUTO > 0) {
+                $('#edit-duration').val(Math.round(Math.abs(costo) / TARIFFA_AL_MINUTO));
+            }
+            _editAggiornandoDurata = false;
+        }
+    });
+
+    // consumo: minuti cambiano → durata = |minuti|
+    $('#edit-minuti').on('input', function () {
+        if ($('#edit-tipo').val() === 'consumo') {
+            const min = parseFloat($(this).val()) || 0;
+            $('#edit-duration').val(Math.abs(min));
+        }
+    });
+
     $(document).on('click', '.btn-edit', function (e) {
         e.stopPropagation();
-        const row = $(this).closest('.clickable-row');
+        const row  = $(this).closest('.clickable-row');
         const tipo = row.data('tipo') || '';
+        const ora  = row.data('ora') || '';
+
         $('#edit-id').val(row.data('id-chiamata'));
         $('#edit-user-display').text((row.data('nome') + ' ' + row.data('cognome')).trim() + ' (' + row.data('tel') + ')');
         $('#edit-date').val(row.data('data'));
-        $('#edit-time').val(row.data('ora'));
+        $('#edit-time').val(ora);
         $('#edit-duration').val(row.data('durata'));
-        $('#edit-cost').val(row.data('costo'));
-        var costoLabel = tipo === 'consumo' ? 'Costo (€) — 0 per consumo, modifica durata:' : 'Costo (€):';
-        $('#edit-panel').find('label[for="edit-cost"]').text(costoLabel);
+        $('#edit-tipo').val(tipo);
+
+        if (tipo === 'ricarica') {
+            $('#edit-field-minuti').hide();
+            $('#edit-minuti').val('');
+            $('#edit-field-costo').show();
+            $('#edit-cost').val(row.data('costo'));
+            $('#edit-tipo-info')
+                .html('<i class="fa-solid fa-circle-info"></i> Contratto <strong>Ricarica</strong> — durata e costo si aggiornano a vicenda (€0,28/min). Negativi per storni.')
+                .show();
+        } else if (tipo === 'consumo') {
+            $('#edit-field-costo').hide();
+            $('#edit-cost').val(0);
+            $('#edit-field-minuti').show();
+            $('#edit-minuti').val(row.data('durata'));
+            $('#edit-tipo-info')
+                .html('<i class="fa-solid fa-circle-info"></i> Contratto <strong>Consumo</strong> — durata e minuti si aggiornano a vicenda. Negativi per storni.')
+                .show();
+        } else {
+            $('#edit-field-costo').show();
+            $('#edit-field-minuti').hide();
+            $('#edit-cost').val(row.data('costo'));
+            $('#edit-tipo-info').hide();
+        }
+
         $('#edit-panel').removeClass('hidden-element').hide().fadeIn(300);
         $('html, body').animate({ scrollTop: $('#edit-panel').offset().top }, 500);
     });
@@ -460,15 +525,18 @@ $(document).ready(function () {
 
     $('#form-edit-call').on('submit', function (e) {
         e.preventDefault();
+        const tipo = $('#edit-tipo').val();
         $.ajax({
             url: '../php/update_call.php',
             type: 'POST',
             data: {
-                id_chiamata: $('#edit-id').val(),
-                data:        $('#edit-date').val(),
-                ora:         $('#edit-time').val(),
-                durata:      $('#edit-duration').val(),
-                costo:       $('#edit-cost').val()
+                id_chiamata:    $('#edit-id').val(),
+                data:           $('#edit-date').val(),
+                ora:            $('#edit-time').val(),
+                durata:         $('#edit-duration').val(),
+                tipo_contratto: tipo,
+                costo:          tipo === 'ricarica' ? $('#edit-cost').val() : 0,
+                minuti_scalati: tipo === 'consumo'  ? $('#edit-minuti').val() : 0
             },
             dataType: 'html',
             success: function () {
