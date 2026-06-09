@@ -561,3 +561,262 @@ footer {
 .dark-mode .link-nominativo {
     color: var(--salmon-primary);
 }
+
+
+/* =========================================
+   10. RESPONSIVE — TABLET E MOBILE
+   ========================================= */
+
+/* --- Tablet (≤ 900px) --- */
+@media (max-width: 900px) {
+    body {
+        --title: 1.4rem;
+        --subtitle: 1.2rem;
+        --paragraph: 0.95rem;
+    }
+
+    .header {
+        height: auto;
+        min-height: 56px;
+        padding: 0.75rem 1rem;
+        font-size: var(--title);
+    }
+
+    .navbar-list {
+        flex-wrap: wrap;
+    }
+
+    .navbar-list li {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .navbar-list a {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .grid-container {
+        width: 95%;
+        padding: 1.5rem 0;
+    }
+
+    .table-wrapper,
+    .admin-card {
+        padding: 1.2rem;
+    }
+
+    .admin-card {
+        max-width: 100%;
+        margin: 1rem auto;
+    }
+}
+
+/* --- Mobile (≤ 600px) --- */
+@media (max-width: 600px) {
+    body {
+        --title: 1.1rem;
+        --subtitle: 1rem;
+        --paragraph: 0.9rem;
+        --note: 0.75rem;
+    }
+
+    /* Header compatto */
+    .header {
+        height: auto;
+        min-height: 48px;
+        padding: 0.6rem 0.8rem;
+        font-size: var(--title);
+    }
+
+    /* Navbar: voci su due righe da 2 elementi */
+    .navbar-list {
+        flex-wrap: wrap;
+    }
+
+    .navbar-list li {
+        flex: 1 1 50%;
+        min-width: 0;
+        border-bottom: 1px solid var(--salmon-dark);
+    }
+
+    .navbar-list a {
+        padding: 0.65rem 0.5rem;
+        font-size: 0.82rem;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Filtri full-width */
+    .filters {
+        width: 96%;
+    }
+
+    .search-box {
+        flex-wrap: wrap;
+    }
+
+    .search-box input {
+        min-width: 0;
+        width: 100%;
+    }
+
+    /* Filtro date: metti tutto su una riga che può andare a capo */
+    .search-box[style*="margin-top"] {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    /* Grid e card */
+    .grid-container {
+        width: 98%;
+        padding: 1rem 0;
+        gap: 1rem;
+    }
+
+    .table-wrapper,
+    .admin-card {
+        padding: 0.9rem 0.7rem;
+        border-radius: 6px;
+    }
+
+    /* Tabella scrollabile orizzontalmente */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+        min-width: 520px; /* forza scroll se non c'è spazio */
+        font-size: 0.82rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.6rem 0.5rem;
+        white-space: nowrap;
+    }
+
+    /* Header riga tabella */
+    .table-header-row {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    /* Form a colonna singola */
+    .form-row {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        gap: 0.6rem;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Modale */
+    .modal-box {
+        padding: 1.2rem 1rem;
+        width: 96%;
+    }
+
+    .modal-actions {
+        flex-direction: column-reverse;
+        gap: 0.6rem;
+    }
+
+    .modal-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Bottoni azione tabella */
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .btn-action {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.5rem;
+    }
+
+    /* Footer */
+    footer {
+        height: auto;
+        min-height: 40px;
+        font-size: 0.75rem;
+        text-align: center;
+        padding: 0.8rem 1rem;
+    }
+
+    /* Toast residuo */
+    .residuo-toast {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        font-size: 0.85rem;
+    }
+
+    /* Bottone btn-sm più comodo da toccare */
+    .btn-sm {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.82rem;
+    }
+}
+
+/* =========================================
+   11. STILI BASE MANCANTI (classi usate nel JS/HTML senza stile definito)
+   ========================================= */
+
+.table-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    gap: 0.5rem;
+}
+
+.last-query-label {
+    font-size: var(--note);
+    color: var(--text-secondary);
+    padding: 0.3rem 0.5rem;
+    background-color: var(--salmon-ultra-light);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.residuo-toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background-color: var(--salmon-dark);
+    color: #fff;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    z-index: 3000;
+    font-size: var(--paragraph);
+    max-width: 340px;
+}
+
+.residuo-toast button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    line-height: 1;
+}
