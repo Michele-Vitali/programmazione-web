@@ -4,6 +4,10 @@ require_once 'utils/dbconn.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { die("Metodo non consentito."); }
 
+function normalizzaNumero($n) {
+    return preg_replace('/[\s\+]/', '', $n);
+}
+
 $id             = isset($_POST['id_chiamata'])    ? intval($_POST['id_chiamata'])      : 0;
 $data           = isset($_POST['data'])           ? trim($_POST['data'])               : '';
 $ora            = isset($_POST['ora'])            ? trim($_POST['ora'])                : '';
@@ -47,6 +51,74 @@ $stmt->close();
 
 $telefono      = $originale['effettuataDa'];
 $tipoContratto = $originale['tipo'] ?: $tipo_contratto; // fallback se JOIN non trova contratto
+$telefonoNorm  = normalizzaNumero($telefono);
+
+// --- CONTROLLO 1: data non nel futuro ---
+if ($data > date('Y-m-d')) {
+    echo "<div class='error-message'><h4>⚠️ Data non valida</h4>
+          <p>La data (<strong>" . htmlspecialchars($data) . "</strong>) non può essere nel futuro.</p></div>";
+    $conn->close(); exit;
+}
+
+// --- CONTROLLO 2: data vs attivazione contratto ---
+$stmt = $conn->prepare(
+    "SELECT dataAttivazione FROM ContrattoTelefonico
+     WHERE REPLACE(REPLACE(numero,' ',''),'+','') = ?"
+);
+$stmt->bind_param("s", $telefonoNorm);
+$stmt->execute();
+$res = $stmt->get_result();
+if ($res->num_rows > 0) {
+    $contratto = $res->fetch_assoc();
+    if ($data < $contratto['dataAttivazione']) {
+        echo "<div class='error-message'><h4>⚠️ Data antecedente all'attivazione del contratto</h4>
+              <p>Data telefonata: <strong>" . htmlspecialchars($data) . "</strong> —
+                 Attivazione contratto: <strong>" . htmlspecialchars($contratto['dataAttivazione']) . "</strong></p></div>";
+        $stmt->close(); $conn->close(); exit;
+    }
+}
+$stmt->close();
+
+// --- CONTROLLO 3+4: SIM (attiva o disattivata) ---
+$stato_sim = null; $dataAttivSIM = null; $dataDisattivSIM = null;
+
+$stmt = $conn->prepare("SELECT dataAttivazione FROM SIMAttiva WHERE REPLACE(REPLACE(associataA,' ',''),'+','') = ?");
+$stmt->bind_param("s", $telefonoNorm);
+$stmt->execute();
+$res = $stmt->get_result();
+if ($res->num_rows > 0) {
+    $sim = $res->fetch_assoc();
+    $stato_sim    = 'Attiva';
+    $dataAttivSIM = $sim['dataAttivazione'];
+}
+$stmt->close();
+
+if (!$stato_sim) {
+    $stmt = $conn->prepare("SELECT dataAttivazione, dataDisattivazione FROM SIMDisattiva WHERE REPLACE(REPLACE(eraAssociataA,' ',''),'+','') = ?");
+    $stmt->bind_param("s", $telefonoNorm);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res->num_rows > 0) {
+        $sim             = $res->fetch_assoc();
+        $stato_sim       = 'Disattivata';
+        $dataAttivSIM    = $sim['dataAttivazione'];
+        $dataDisattivSIM = $sim['dataDisattivazione'];
+    }
+    $stmt->close();
+}
+
+if ($stato_sim && $data < $dataAttivSIM) {
+    echo "<div class='error-message'><h4>⚠️ Data antecedente all'attivazione della SIM</h4>
+          <p>Data telefonata: <strong>" . htmlspecialchars($data) . "</strong> —
+             Attivazione SIM: <strong>" . htmlspecialchars($dataAttivSIM) . "</strong></p></div>";
+    $conn->close(); exit;
+}
+if ($stato_sim === 'Disattivata' && $data > $dataDisattivSIM) {
+    echo "<div class='error-message'><h4>⚠️ SIM già disattivata</h4>
+          <p>Data telefonata: <strong>" . htmlspecialchars($data) . "</strong> —
+             Disattivazione SIM: <strong>" . htmlspecialchars($dataDisattivSIM) . "</strong></p></div>";
+    $conn->close(); exit;
+}
 
 $conn->begin_transaction();
 try {
