@@ -543,7 +543,8 @@ $(document).ready(function () {
             dataType: 'html',
             success: function (resp) {
                 $('#edit-response').html(resp);
-                if ($(resp).hasClass('success-message') || $(resp).filter('.success-message').length) {
+                const ok = $('#edit-response').find('.success-message').length > 0;
+                if (ok) {
                     eseguiRicercaTelefonate();
                     setTimeout(function () {
                         $('#edit-panel').fadeOut(200, function () {
