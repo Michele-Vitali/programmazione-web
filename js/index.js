@@ -520,12 +520,14 @@ $(document).ready(function () {
     });
 
     $('#btn-cancel-edit').on('click', function () {
+        $('#edit-response').html('');
         $('#edit-panel').fadeOut(200, function () { $(this).addClass('hidden-element'); });
     });
 
     $('#form-edit-call').on('submit', function (e) {
         e.preventDefault();
         const tipo = $('#edit-tipo').val();
+        $('#edit-response').html('');
         $.ajax({
             url: '../php/update_call.php',
             type: 'POST',
@@ -539,11 +541,19 @@ $(document).ready(function () {
                 minuti_scalati: tipo === 'consumo'  ? $('#edit-minuti').val() : 0
             },
             dataType: 'html',
-            success: function () {
-                $('#edit-panel').fadeOut(200, function () { $(this).addClass('hidden-element'); });
-                eseguiRicercaTelefonate();
+            success: function (resp) {
+                $('#edit-response').html(resp);
+                if ($(resp).hasClass('success-message') || $(resp).filter('.success-message').length) {
+                    eseguiRicercaTelefonate();
+                    setTimeout(function () {
+                        $('#edit-panel').fadeOut(200, function () {
+                            $(this).addClass('hidden-element').show();
+                            $('#edit-response').html('');
+                        });
+                    }, 1200);
+                }
             },
-            error: function () { alert('Errore durante la modifica'); }
+            error: function () { $('#edit-response').html("<div class='error-message'><h4>❌ Errore di connessione</h4><p>Impossibile contattare il server.</p></div>"); }
         });
     });
 
